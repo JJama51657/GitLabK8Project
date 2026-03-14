@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tomcat-monitoring.fullname" . }}-tomcat
+  labels:
+    app: tomcat
+spec:
+  replicas: {{ .Values.tomcat.replicaCount }}
+  selector:
+    matchLabels:
+      app: tomcat
+  template:
+    metadata:
+      labels:
+        app: tomcat
+    spec:
+      initContainers:
+      - name: setup-sample-app
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /usr/local/tomcat/webapps/ROOT
+          cat > /usr/local/tomcat/webapps/ROOT/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+          <head><title>Tomcat Test</title></head>
+          <body>
+            <h1>Tomcat is Running!</h1>
+            <p>Hostname: $(hostname)</p>
+            <p>This is a test deployment</p>
+          </body>
+          </html>
+          EOF
+        volumeMounts:
+        - name: webapps
+          mountPath: /usr/local/tomcat/webapps
+      - name: download-jmx-exporter
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          wget -O /jmx/jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar
+        volumeMounts:
+        - name: jmx-jar
+          mountPath: /jmx
+      containers:
+      - name: tomcat
+        image: {{ .Values.tomcat.image.repository }}:{{ .Values.tomcat.image.tag }}
+        imagePullPolicy: {{ .Values.tomcat.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.tomcat.service.port }}
+          name: http
+        - containerPort: {{ .Values.tomcat.service.metricsPort }}
+          name: metrics
+        env:
+        - name: CATALINA_OPTS
+          value: "-javaagent:/jmx/jmx_prometheus_javaagent.jar={{ .Values.tomcat.service.metricsPort }}:/config/jmx-config.yaml"
+        volumeMounts:
+        - name: webapps
+          mountPath: /usr/local/tomcat/webapps
+        - name: jmx-jar
+          mountPath: /jmx
+        - name: jmx-config
+          mountPath: /config
+        resources:
+          {{- toYaml .Values.tomcat.resources | nindent 10 }}
+      volumes:
+      - name: webapps
+        emptyDir: {}
+      - name: jmx-jar
+        emptyDir: {}
+      - name: jmx-config
+        configMap:
+          name: {{ include "tomcat-monitoring.fullname" . }}-jmx-config

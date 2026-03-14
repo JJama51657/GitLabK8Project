@@ -1,0 +1,23 @@
+{{- if .Values.grafana.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    {{- if .Values.prometheus.enabled }}
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus-service:{{ .Values.prometheus.service.port }}
+      isDefault: true
+    {{- end }}
+    {{- if .Values.loki.enabled }}
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-service:{{ .Values.loki.service.port }}
+    {{- end }}
+{{- end }}

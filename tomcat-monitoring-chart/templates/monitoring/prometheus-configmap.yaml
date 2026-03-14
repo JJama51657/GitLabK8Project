@@ -1,0 +1,15 @@
+{{- if .Values.prometheus.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: {{ .Values.prometheus.scrapeInterval }}
+    scrape_configs:
+      - job_name: 'tomcat'
+        static_configs:
+          - targets: ['tomcat-service:{{ .Values.tomcat.service.metricsPort }}']
+        metrics_path: '/metrics'
+{{- end }}

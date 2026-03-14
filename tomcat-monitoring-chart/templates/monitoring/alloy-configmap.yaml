@@ -1,0 +1,41 @@
+{{- if .Values.alloy.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-config
+data:
+  config.alloy: |
+    {{- if .Values.prometheus.enabled }}
+    prometheus.scrape "tomcat" {
+      targets = [{
+        __address__ = "tomcat-service:{{ .Values.tomcat.service.metricsPort }}",
+      }]
+      forward_to = [prometheus.remote_write.default.receiver]
+      metrics_path = "/metrics"
+      scrape_interval = "{{ .Values.prometheus.scrapeInterval }}"
+    }
+
+    prometheus.remote_write "default" {
+      endpoint {
+        url = "http://prometheus-service:{{ .Values.prometheus.service.port }}/api/v1/write"
+      }
+    }
+    {{- end }}
+
+    {{- if .Values.loki.enabled }}
+    loki.source.kubernetes "pods" {
+      targets = discovery.kubernetes.pods.targets
+      forward_to = [loki.write.default.receiver]
+    }
+
+    discovery.kubernetes "pods" {
+      role = "pod"
+    }
+
+    loki.write "default" {
+      endpoint {
+        url = "http://loki-service:{{ .Values.loki.service.port }}/loki/api/v1/push"
+      }
+    }
+    {{- end }}
+{{- end }}

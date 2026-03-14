@@ -1,0 +1,59 @@
+tomcat:
+  replicaCount: 1
+  image:
+    repository: tomcat
+    tag: "10.1-jdk17"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+    metricsPort: 9404
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: dev.tomcat.cutsopen.co.uk
+  annotations: {}
+
+prometheus:
+  enabled: true
+  image:
+    repository: prom/prometheus
+    tag: latest
+  service:
+    port: 9090
+  scrapeInterval: 15s
+
+grafana:
+  enabled: true
+  image:
+    repository: grafana/grafana
+    tag: latest
+  service:
+    port: 3000
+  adminUser: admin
+  adminPassword: admin
+  ingress:
+    host: dev.grafana.cutsopen.co.uk
+
+loki:
+  enabled: true
+  image:
+    repository: grafana/loki
+    tag: latest
+  service:
+    port: 3100
+  retentionPeriod: 24h
+
+alloy:
+  enabled: true
+  image:
+    repository: grafana/alloy
+    tag: latest
