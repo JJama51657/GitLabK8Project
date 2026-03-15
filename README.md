@@ -81,13 +81,13 @@ Recommended: Diagram showing GitLab CI → ECR → ArgoCD → EKS with dev/test/
 <h2>Screenshots</h2>
 
 <h3>ArgoCD — Application Sync</h3>
-<p></p>
+<p><img src="screenshots/ArgoCdAppView.jpg"></p>
 
 <h3>ArgoCD — Dev/Test/Prod Applications</h3>
-<p><img src="screenshots/argocd-apps.png"></p>
+<p><img src="screenshots/Screenshot 2026-03-15 211019.png"></p>
 
 <h3>Grafana Dashboard</h3>
-<p><img src="screenshots/grafana-dashboard.png"></p>
+<p><img src="screenshots/Screenshot 2026-02-19 082508.png"></p>
 
 <h3>GitLab CI Pipeline</h3>
 <p><img src="screenshots/gitlab-pipeline.png"></p>
