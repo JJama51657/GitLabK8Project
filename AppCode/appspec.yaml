@@ -1,0 +1,17 @@
+version: 0.0 
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: {{TASK_DEFINITION}}
+        LoadBalancerInfo:
+          ContainerName: vprofile
+          ContainerPort: 8080
+        NetworkConfiguration:
+          AwsVpcConfiguration:
+            Subnets:
+              - subnet-017d8770bbed0bfc4
+              - subnet-051fb70b46d2d85a2
+            SecurityGroups:
+              - sg-0aea8b2dbc8d74106
+            AssignPublicIp: ENABLED

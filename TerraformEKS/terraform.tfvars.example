@@ -1,0 +1,6 @@
+region             = "us-east-1"
+clusterName        = "vpro-eks"
+git_repo_url       = "https://github.com/yourusername/vprofile-k8s-manifests"
+git_target_revision = "main"
+git_manifests_path = "k8s"
+app_namespace      = "vprofile"
