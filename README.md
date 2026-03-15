@@ -1,132 +1,236 @@
-# Java Microservice — GitOps CI/CD on AWS EKS
+<h1>Java Microservice — GitOps CI/CD on AWS EKS</h1>
 
+<p>
 End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terraform, GitLab CI/CD, ArgoCD, and a full observability stack.
+</p>
 
----
+<hr>
 
-## Architecture Overview
+<h2>Architecture Overview</h2>
 
-![Architecture Diagram](screenshots/architecture.png)
-> *Recommended: Draw a diagram showing GitLab CI → ECR → ArgoCD → EKS with dev/test/prod namespaces*
+<p>
+<img src="screenshots/architecture.png" alt="Architecture Diagram">
+</p>
 
----
+<p>
+Recommended: Diagram showing GitLab CI → ECR → ArgoCD → EKS with dev/test/prod namespaces.
+</p>
 
-## Tech Stack
+<hr>
 
-| Area | Tools |
-|---|---|
-| Infrastructure | Terraform, AWS EKS, VPC, ECR, IAM |
-| CI/CD | GitLab CI/CD, OIDC Authentication |
-| GitOps | ArgoCD, Helm |
-| Observability | Prometheus, Grafana, Loki |
-| Networking | NGINX Ingress, ExternalDNS, Route53 |
-| Autoscaling | HPA |
-| Language | Java |
+<h2>Tech Stack</h2>
 
----
+<table>
+<tr>
+<th>Area</th>
+<th>Tools</th>
+</tr>
 
-## Features
+<tr>
+<td>Infrastructure</td>
+<td>Terraform, AWS EKS, VPC, ECR, IAM</td>
+</tr>
 
-- **Infrastructure as Code** — VPC, EKS cluster, IAM roles, and ECR access provisioned entirely with Terraform
-- **Secure CI/CD** — GitLab pipelines authenticated via OIDC (no long-lived credentials), building and pushing versioned images to ECR
-- **GitOps Delivery** — ArgoCD watches dedicated branches (`dev`, `test`, `main`) in the GitOps repo and automatically promotes changes into their respective Kubernetes namespaces
-- **Environment Isolation** — Each environment maps to a dedicated branch and Kubernetes namespace, ensuring clean separation between dev, test, and production
-- **Observability Stack** — Prometheus, Grafana, and Loki deployed alongside the application via Helm for metrics, dashboards, and log aggregation
-- **Automated DNS** — ExternalDNS automatically creates Route53 records pointing to the NGINX Ingress load balancer on every deployment
-- **Autoscaling** — HPA configured to automatically scale pods based on CPU/memory demand
+<tr>
+<td>CI/CD</td>
+<td>GitLab CI/CD, OIDC Authentication</td>
+</tr>
 
----
+<tr>
+<td>GitOps</td>
+<td>ArgoCD, Helm</td>
+</tr>
 
-## Screenshots
+<tr>
+<td>Observability</td>
+<td>Prometheus, Grafana, Loki</td>
+</tr>
 
-### ArgoCD — Application Sync
-![ArgoCD Sync](screenshots/argocd-sync.png)
+<tr>
+<td>Networking</td>
+<td>NGINX Ingress, ExternalDNS, Route53</td>
+</tr>
 
-### ArgoCD — Dev/Test/Prod Applications
-![ArgoCD Apps](screenshots/argocd-apps.png)
+<tr>
+<td>Autoscaling</td>
+<td>HPA</td>
+</tr>
 
-### Grafana Dashboard
-![Grafana](screenshots/grafana-dashboard.png)
+<tr>
+<td>Language</td>
+<td>Java</td>
+</tr>
+</table>
 
-### GitLab CI Pipeline
-![GitLab Pipeline](screenshots/gitlab-pipeline.png)
+<hr>
 
-### AWS EKS Cluster
-![EKS Cluster](screenshots/eks-cluster.png)
+<h2>Features</h2>
 
-### ECR Repository
-![ECR](screenshots/ecr-repo.png)
+<ul>
+<li><b>Infrastructure as Code</b> — VPC, EKS cluster, IAM roles, and ECR access provisioned entirely with Terraform</li>
+<li><b>Secure CI/CD</b> — GitLab pipelines authenticated via OIDC (no long-lived credentials)</li>
+<li><b>GitOps Delivery</b> — ArgoCD watches branches (<code>dev</code>, <code>test</code>, <code>main</code>) and deploys automatically</li>
+<li><b>Environment Isolation</b> — Each environment maps to its own Kubernetes namespace</li>
+<li><b>Observability Stack</b> — Prometheus, Grafana and Loki deployed via Helm</li>
+<li><b>Automated DNS</b> — ExternalDNS automatically updates Route53 records</li>
+<li><b>Autoscaling</b> — HPA scales pods automatically based on CPU/memory demand</li>
+</ul>
 
----
+<hr>
 
-## Project Structure
+<h2>Screenshots</h2>
 
-```
-├── TerraformEKS/
-│   └── vprofile-project/
-│       ├── eks-cluster.tf        # EKS cluster + node groups
-│       ├── helm-provider.tf      # Kubernetes + Helm providers
-│       ├── argocd.tf             # ArgoCD namespace + Helm install
-│       ├── argocd-apps.tf        # ArgoCD Application manifests
-│       ├── external-dns.tf       # NGINX ingress + ExternalDNS
-│       └── route53.tf            # Route53 hosted zone data source
-└── K8CICD/
-    └── HelmCharts/
-        └── tomcat-monitoring-chart/
-            └── values.yaml       # Helm chart values
-```
+<h3>ArgoCD — Application Sync</h3>
+<p></p>
 
----
+<h3>ArgoCD — Dev/Test/Prod Applications</h3>
+<p><img src="screenshots/argocd-apps.png"></p>
 
-## CI/CD Flow
+<h3>Grafana Dashboard</h3>
+<p><img src="screenshots/grafana-dashboard.png"></p>
 
-```
+<h3>GitLab CI Pipeline</h3>
+<p><img src="screenshots/gitlab-pipeline.png"></p>
+
+<h3>AWS EKS Cluster</h3>
+<p><img src="screenshots/eks-cluster.png"></p>
+
+<h3>ECR Repository</h3>
+<p><img src="screenshots/ecr-repo.png"></p>
+
+<hr>
+
+<h2>Project Structure</h2>
+
+<pre>
+TerraformEKS/
+└── vprofile-project/
+    ├── eks-cluster.tf
+    ├── helm-provider.tf
+    ├── argocd.tf
+    ├── argocd-apps.tf
+    ├── external-dns.tf
+    └── route53.tf
+
+K8CICD/
+└── HelmCharts/
+    └── tomcat-monitoring-chart/
+        └── values.yaml
+</pre>
+
+<hr>
+
+<h2>CI/CD Flow</h2>
+
+<pre>
 Code Push → GitLab CI
   → Build & Test Java app
   → Build Docker image
-  → Push to ECR (versioned tag)
-  → Merge to dev/test/main branch in GitOps repo
+  → Push to ECR
+  → Merge to dev/test/main branch
     → ArgoCD detects branch change
-      → Deploys to corresponding namespace (vprofile-dev/test/prod)
+      → Deploys to namespace
         → ExternalDNS updates Route53
-```
+</pre>
 
----
+<hr>
 
-## Environment Strategy
+<h2>Environment Strategy</h2>
 
-| Branch | Namespace | URL |
-|---|---|---|
-| `dev` | `vprofile-dev` | `https://dev.tomcat.cutsopen.co.uk` |
-| `test` | `vprofile-test` | `https://test.tomcat.cutsopen.co.uk` |
-| `main` | `vprofile-prod` | `https://tomcat.cutsopen.co.uk` |
+<table>
+<tr>
+<th>Branch</th>
+<th>Namespace</th>
+<th>URL</th>
+</tr>
 
----
+<tr>
+<td>dev</td>
+<td>vprofile-dev</td>
+<td>https://dev.tomcat.cutsopen.co.uk</td>
+</tr>
 
-## Infrastructure
+<tr>
+<td>test</td>
+<td>vprofile-test</td>
+<td>https://test.tomcat.cutsopen.co.uk</td>
+</tr>
 
-- **VPC** — Custom VPC with public/private subnets across multiple AZs
-- **EKS** — Managed node groups with `t3.small` instances, autoscaling 1-3 nodes
-- **ECR** — Private container registry with node IAM role pull access
-- **IAM** — Least privilege roles for EKS nodes, ExternalDNS, and CI/CD
+<tr>
+<td>main</td>
+<td>vprofile-prod</td>
+<td>https://tomcat.cutsopen.co.uk</td>
+</tr>
+</table>
 
----
+<hr>
 
-## Observability
+<h2>Infrastructure</h2>
 
-| Tool | Purpose | URL |
-|---|---|---|
-| Prometheus | Metrics scraping | Internal |
-| Grafana | Dashboards | `grafana.cutsopen.co.uk` |
-| Loki | Log aggregation | Internal |
+<ul>
+<li><b>VPC</b> — Custom VPC with public/private subnets across multiple AZs</li>
+<li><b>EKS</b> — Managed node groups with <code>t3.small</code> instances (1–3 nodes autoscaling)</li>
+<li><b>ECR</b> — Private container registry</li>
+<li><b>IAM</b> — Least privilege roles for EKS nodes, ExternalDNS, and CI/CD</li>
+</ul>
 
----
+<hr>
 
-## Live URLs
+<h2>Observability</h2>
 
-| Environment | URL |
-|---|---|
-| Production | `https://tomcat.cutsopen.co.uk` |
-| Dev | `https://dev.tomcat.cutsopen.co.uk` |
-| Test | `https://test.tomcat.cutsopen.co.uk` |
-| Grafana | `https://grafana.cutsopen.co.uk` |
+<table>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+<th>URL</th>
+</tr>
+
+<tr>
+<td>Prometheus</td>
+<td>Metrics scraping</td>
+<td>Internal</td>
+</tr>
+
+<tr>
+<td>Grafana</td>
+<td>Dashboards</td>
+<td>grafana.cutsopen.co.uk</td>
+</tr>
+
+<tr>
+<td>Loki</td>
+<td>Log aggregation</td>
+<td>Internal</td>
+</tr>
+</table>
+
+<hr>
+
+<h2>Live URLs</h2>
+
+<table>
+<tr>
+<th>Environment</th>
+<th>URL</th>
+</tr>
+
+<tr>
+<td>Production</td>
+<td>https://tomcat.cutsopen.co.uk</td>
+</tr>
+
+<tr>
+<td>Dev</td>
+<td>https://dev.tomcat.cutsopen.co.uk</td>
+</tr>
+
+<tr>
+<td>Test</td>
+<td>https://test.tomcat.cutsopen.co.uk</td>
+</tr>
+
+<tr>
+<td>Grafana</td>
+<td>https://grafana.cutsopen.co.uk</td>
+</tr>
+</table>
