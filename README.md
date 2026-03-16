@@ -167,13 +167,19 @@ Code Push → GitLab CI
 <pre>
 TerraformEKS/
 └── vprofile-project/
-    ├── eks-cluster.tf
-    ├── helm-provider.tf
+    ├── argocd-apps.tf    
+    ├── argocd-outputs.tf
     ├── argocd.tf
-    ├── argocd-apps.tf
+    ├── eks-cluster.tf
     ├── external-dns.tf
+    └── helm-provider.tf
+    └── main.tf
+    └── outputs.tf
     └── route53.tf
-
+    └── terraform.tf
+    └── terraform.tfvars.example
+    └── variables.tf
+    └── vpc.tf
 K8CICD/
 └── HelmCharts/
     └── tomcat-monitoring-chart/
