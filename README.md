@@ -204,6 +204,5 @@ Code Push → GitLab CI
 
 <hr>
 
-na.cutsopen.co.uk</td>
 </tr>
 </table>
