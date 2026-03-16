@@ -183,7 +183,27 @@ TerraformEKS/
 K8CICD/
 └── HelmCharts/
     └── tomcat-monitoring-chart/
-        └── values.yaml
+        └── templates/
+          └── apps/
+              └── hpa.yaml
+              └── ingress.yaml
+              └── jmx-configmap.yaml
+              └── tomcat-deployment.yaml
+              └── tomcat-service.yaml
+          └── monitoring/
+              └── alloy-configmap.yaml
+              └── alloy-daemonset.yaml
+              └── alloy-rbac.yaml
+              └── grafana-datasources.yaml
+              └── grafana-deployment.yaml
+              └── loki-configmap.yaml
+              └── loki-deployment.yaml
+              └── prometheus-configmap.yaml
+              └── prometheus-deployment.yaml
+          └── chart.yaml
+          └── values.yaml
+          └── _helpers.tpl
+    └── AppCode/ (Commited to different Repo)
 </pre>
 
 <hr>
