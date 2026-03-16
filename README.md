@@ -204,31 +204,6 @@ Code Push → GitLab CI
 
 <hr>
 
-<h2>Live URLs</h2>
-
-<table>
-<tr>
-<th>Environment</th>
-<th>URL</th>
-</tr>
-
-<tr>
-<td>Production</td>
-<td>https://tomcat.cutsopen.co.uk</td>
-</tr>
-
-<tr>
-<td>Dev</td>
-<td>https://dev.tomcat.cutsopen.co.uk</td>
-</tr>
-
-<tr>
-<td>Test</td>
-<td>https://test.tomcat.cutsopen.co.uk</td>
-</tr>
-
-<tr>
-<td>Grafana</td>
-<td>https://grafana.cutsopen.co.uk</td>
+na.cutsopen.co.uk</td>
 </tr>
 </table>
