@@ -93,7 +93,7 @@ Recommended: Diagram showing GitLab CI → ECR → ArgoCD → EKS with dev/test/
 <p><img src="screenshots/Screenshot 2026-03-15 235459.png"></p>
 
 <h3>AWS EKS Cluster</h3>
-<p><img src="screenshots/eks-cluster.png"></p>
+<p><img src="screenshots/Screenshot 2026-03-15 225611.png"></p>
 
 
 <hr>
