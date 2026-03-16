@@ -4,6 +4,8 @@
 End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terraform, GitLab CI/CD, ArgoCD, and a full observability stack.
 </p>
 
+
+
 <hr>
 
 <h2>Architecture Overview</h2>
@@ -15,6 +17,20 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 
 <hr>
 
+
+<h2>Features</h2>
+
+<ul>
+<li><b>Infrastructure as Code</b> — VPC, EKS cluster, IAM roles, and ECR access provisioned entirely with Terraform</li>
+<li><b>Secure CI/CD</b> — GitLab pipelines authenticated via OIDC (no long-lived credentials)</li>
+<li><b>GitOps Delivery</b> — ArgoCD watches branches (<code>dev</code>, <code>test</code>, <code>main</code>) and deploys automatically</li>
+<li><b>Environment Isolation</b> — Each environment maps to its own Kubernetes namespace</li>
+<li><b>Observability Stack</b> — Prometheus, Grafana and Loki deployed via Helm</li>
+<li><b>Automated DNS</b> — ExternalDNS automatically updates Route53 records</li>
+<li><b>Autoscaling</b> — HPA scales pods automatically based on CPU/memory demand</li>
+</ul>
+
+<hr>
 <h2>Tech Stack</h2>
 
 <table>
@@ -58,62 +74,8 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <td>Java</td>
 </tr>
 </table>
-
 <hr>
 
-<h2>Features</h2>
-
-<ul>
-<li><b>Infrastructure as Code</b> — VPC, EKS cluster, IAM roles, and ECR access provisioned entirely with Terraform</li>
-<li><b>Secure CI/CD</b> — GitLab pipelines authenticated via OIDC (no long-lived credentials)</li>
-<li><b>GitOps Delivery</b> — ArgoCD watches branches (<code>dev</code>, <code>test</code>, <code>main</code>) and deploys automatically</li>
-<li><b>Environment Isolation</b> — Each environment maps to its own Kubernetes namespace</li>
-<li><b>Observability Stack</b> — Prometheus, Grafana and Loki deployed via Helm</li>
-<li><b>Automated DNS</b> — ExternalDNS automatically updates Route53 records</li>
-<li><b>Autoscaling</b> — HPA scales pods automatically based on CPU/memory demand</li>
-</ul>
-
-<hr>
-
-<h2>Screenshots</h2>
-
-<h3>ArgoCD — Application Sync</h3>
-<p><img src="screenshots/ArgoCdAppView.jpg" width="800"></p>
-
-<h3>ArgoCD — Dev/Test/Prod Applications</h3>
-<p><img src="screenshots/Screenshot 2026-03-15 211019.png" width="800"></p>
-
-<h3>Grafana Dashboard</h3>
-<p><img src="screenshots/Screenshot 2026-02-19 082508.png" width="800"></p>
-
-<h3>GitLab CI Pipeline</h3>
-<p><img src="screenshots/Screenshot 2026-03-15 235459.png" width="800"></p>
-
-<h3>AWS EKS Cluster</h3>
-<p><img src="screenshots/Screenshot 2026-03-15 225611.png" width="800"></p>
-
-
-<hr>
-
-<h2>Project Structure</h2>
-
-<pre>
-TerraformEKS/
-└── vprofile-project/
-    ├── eks-cluster.tf
-    ├── helm-provider.tf
-    ├── argocd.tf
-    ├── argocd-apps.tf
-    ├── external-dns.tf
-    └── route53.tf
-
-K8CICD/
-└── HelmCharts/
-    └── tomcat-monitoring-chart/
-        └── values.yaml
-</pre>
-
-<hr>
 
 <h2>CI/CD Flow</h2>
 
@@ -157,9 +119,7 @@ Code Push → GitLab CI
 <td>https://tomcat.cutsopen.co.uk</td>
 </tr>
 </table>
-
 <hr>
-
 <h2>Infrastructure</h2>
 
 <ul>
@@ -170,6 +130,8 @@ Code Push → GitLab CI
 </ul>
 
 <hr>
+
+
 
 <h2>Observability</h2>
 
@@ -200,6 +162,51 @@ Code Push → GitLab CI
 </table>
 
 <hr>
+<h2>Project Structure</h2>
+
+<pre>
+TerraformEKS/
+└── vprofile-project/
+    ├── eks-cluster.tf
+    ├── helm-provider.tf
+    ├── argocd.tf
+    ├── argocd-apps.tf
+    ├── external-dns.tf
+    └── route53.tf
+
+K8CICD/
+└── HelmCharts/
+    └── tomcat-monitoring-chart/
+        └── values.yaml
+</pre>
+
+<hr>
+<h2>Screenshots</h2>
+
+<h3>ArgoCD — Application Sync</h3>
+<p><img src="screenshots/ArgoCdAppView.jpg" width="800"></p>
+
+<h3>ArgoCD — Dev/Test/Prod Applications</h3>
+<p><img src="screenshots/Screenshot 2026-03-15 211019.png" width="800"></p>
+
+<h3>Grafana Dashboard</h3>
+<p><img src="screenshots/Screenshot 2026-02-19 082508.png" width="800"></p>
+
+<h3>GitLab CI Pipeline</h3>
+<p><img src="screenshots/Screenshot 2026-03-15 235459.png" width="800"></p>
+
+<h3>AWS EKS Cluster</h3>
+<p><img src="screenshots/Screenshot 2026-03-15 225611.png" width="800"></p>
+
+
+<hr>
+
+
+
+
+
+
+
 
 </tr>
 </table>
