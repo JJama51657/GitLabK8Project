@@ -9,12 +9,9 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <h2>Architecture Overview</h2>
 
 <p>
-<img src="screenshots/GitCDDiagram" alt="Architecture Diagram">
+<img src="screenshots/GitCDDIagram.png" alt="Architecture Diagram" height=550>
 </p>
 
-<p>
-Recommended: Diagram showing GitLab CI → ECR → ArgoCD → EKS with dev/test/prod namespaces.
-</p>
 
 <hr>
 
