@@ -10,16 +10,20 @@ tomcat:
     metricsPort: 9404
   resources:
     requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
       memory: "512Mi"
       cpu: "500m"
-    limits:
-      memory: "1Gi"
-      cpu: "1000m"
-
+  hpa:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 5
+    cpuThreshold: 70
 ingress:
   enabled: true
   className: nginx
-  host: tomcat.cutsopen.co.uk
+  host: dev.tomcat.kubevpro.cutsopen.co.uk
   annotations: {}
 
 prometheus:
@@ -41,7 +45,7 @@ grafana:
   adminUser: admin
   adminPassword: admin
   ingress:
-    host: grafana.cutsopen.co.uk
+    host: dev.grafana.kubevpro.cutsopen.co.uk
 
 loki:
   enabled: true
@@ -50,10 +54,10 @@ loki:
     tag: latest
   service:
     port: 3100
-  retentionPeriod: 744h
+  retentionPeriod: 24h
 
 alloy:
-  enabled: true
+  enabled: false
   image:
     repository: grafana/alloy
     tag: latest
