@@ -2,5 +2,10 @@
 terraform.tfstate
 terraform.tfstate.backup
 *.tfvars
+*.tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
 .DS_Store
 Thumbs.db
