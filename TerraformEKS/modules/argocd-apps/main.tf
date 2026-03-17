@@ -4,11 +4,10 @@ resource "kubernetes_manifest" "vprofile_app" {
     kind       = "Application"
     metadata = {
       name      = "vprofile-app"
-      namespace = kubernetes_namespace.argocd.metadata[0].name
+      namespace = var.argocd_namespace
     }
     spec = {
       project = "default"
-
       source = {
         repoURL        = var.git_repo_url
         targetRevision = "main"
@@ -17,27 +16,20 @@ resource "kubernetes_manifest" "vprofile_app" {
           releaseName = "vprofile"
         }
       }
-
       destination = {
         server    = "https://kubernetes.default.svc"
         namespace = "vprofile-prod"
       }
-
       syncPolicy = {
         automated = {
           prune    = true
           selfHeal = true
         }
-        syncOptions = [
-          "CreateNamespace=true"
-        ]
+        syncOptions = ["CreateNamespace=true"]
       }
     }
   }
-
   computed_fields = ["metadata.finalizers", "metadata.labels", "metadata.annotations"]
-
-  depends_on = [helm_release.argocd, module.eks]
 }
 
 resource "kubernetes_manifest" "vprofile_app_dev" {
@@ -46,11 +38,10 @@ resource "kubernetes_manifest" "vprofile_app_dev" {
     kind       = "Application"
     metadata = {
       name      = "vprofile-app-dev"
-      namespace = kubernetes_namespace.argocd.metadata[0].name
+      namespace = var.argocd_namespace
     }
     spec = {
       project = "default"
-
       source = {
         repoURL        = var.git_repo_url
         targetRevision = "dev"
@@ -59,27 +50,20 @@ resource "kubernetes_manifest" "vprofile_app_dev" {
           releaseName = "vprofile-dev"
         }
       }
-
       destination = {
         server    = "https://kubernetes.default.svc"
         namespace = "vprofile-dev"
       }
-
       syncPolicy = {
         automated = {
           prune    = true
           selfHeal = true
         }
-        syncOptions = [
-          "CreateNamespace=true"
-        ]
+        syncOptions = ["CreateNamespace=true"]
       }
     }
   }
-
   computed_fields = ["metadata.finalizers", "metadata.labels", "metadata.annotations"]
-
-  depends_on = [helm_release.argocd, module.eks]
 }
 
 resource "kubernetes_manifest" "vprofile_app_test" {
@@ -88,11 +72,10 @@ resource "kubernetes_manifest" "vprofile_app_test" {
     kind       = "Application"
     metadata = {
       name      = "vprofile-app-test"
-      namespace = kubernetes_namespace.argocd.metadata[0].name
+      namespace = var.argocd_namespace
     }
     spec = {
       project = "default"
-
       source = {
         repoURL        = var.git_repo_url
         targetRevision = "test"
@@ -101,25 +84,18 @@ resource "kubernetes_manifest" "vprofile_app_test" {
           releaseName = "vprofile-test"
         }
       }
-
       destination = {
         server    = "https://kubernetes.default.svc"
         namespace = "vprofile-test"
       }
-
       syncPolicy = {
         automated = {
           prune    = true
           selfHeal = true
         }
-        syncOptions = [
-          "CreateNamespace=true"
-        ]
+        syncOptions = ["CreateNamespace=true"]
       }
     }
   }
-
   computed_fields = ["metadata.finalizers", "metadata.labels", "metadata.annotations"]
-
-  depends_on = [helm_release.argocd, module.eks]
 }

@@ -2,8 +2,6 @@ resource "kubernetes_namespace" "argocd" {
   metadata {
     name = "argocd"
   }
-
-  depends_on = [module.eks]
 }
 
 resource "helm_release" "argocd" {
@@ -23,7 +21,7 @@ resource "helm_release" "argocd" {
     value = "--insecure"
   }
 
-  depends_on = [kubernetes_namespace.argocd, module.eks]
+  depends_on = [kubernetes_namespace.argocd]
 }
 
 data "kubernetes_service" "argocd_server" {
@@ -32,7 +30,7 @@ data "kubernetes_service" "argocd_server" {
     namespace = kubernetes_namespace.argocd.metadata[0].name
   }
 
-  depends_on = [helm_release.argocd, module.eks]
+  depends_on = [helm_release.argocd]
 }
 
 data "kubernetes_secret" "argocd_admin" {
@@ -41,5 +39,5 @@ data "kubernetes_secret" "argocd_admin" {
     namespace = kubernetes_namespace.argocd.metadata[0].name
   }
 
-  depends_on = [helm_release.argocd, module.eks]
+  depends_on = [helm_release.argocd]
 }

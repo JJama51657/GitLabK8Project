@@ -18,7 +18,7 @@ resource "aws_iam_policy" "external_dns" {
 }
 
 resource "aws_iam_role_policy_attachment" "external_dns" {
-  for_each   = module.eks.eks_managed_node_groups
+  for_each   = var.node_groups
   role       = each.value.iam_role_name
   policy_arn = aws_iam_policy.external_dns.arn
 }
@@ -39,8 +39,6 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
     value = "nlb"
   }
-
-  depends_on = [module.eks]
 }
 
 resource "helm_release" "external_dns" {
@@ -61,8 +59,18 @@ resource "helm_release" "external_dns" {
   }
 
   set {
+    name  = "env[0].name"
+    value = "AWS_DEFAULT_REGION"
+  }
+
+  set {
+    name  = "env[0].value"
+    value = var.region
+  }
+
+  set {
     name  = "domainFilters[0]"
-    value = data.aws_route53_zone.main.name
+    value = var.domain_name
   }
 
   set {
@@ -75,5 +83,12 @@ resource "helm_release" "external_dns" {
     value = "ingress"
   }
 
-  depends_on = [module.eks, helm_release.nginx_ingress]
+  depends_on = [helm_release.nginx_ingress]
+}
+
+resource "helm_release" "metrics_server" {
+  name       = "metrics-server"
+  repository = "https://kubernetes-sigs.github.io/metrics-server"
+  chart      = "metrics-server"
+  namespace  = "kube-system"
 }
