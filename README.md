@@ -129,10 +129,20 @@ Code Push → GitLab CI
 <li><b>IAM</b> — Least privilege roles for EKS nodes, ExternalDNS, and CI/CD</li>
 </ul>
 
+
 <hr>
+<h2>🚨 Incident Handling & Lessons Learned</h2>
 
-
-
+<ul>
+<li>Observed only 4 metrics in Grafana from Prometheus</li>
+<li>Verified Prometheus scraping and app connectivity to the Java microservice</li>
+<li>Discovered application error on the webpage prevented JMX exporter from exposing metrics</li>
+<li>Checked Loki logs and realized metrics issue could have been detected earlier via logs</li>
+<li>Root cause: ECS image pull failed due to ECR permissions</li>
+<li>Fixed Terraform policies to allow ECR access → redeployed container</li>
+<li><b>Lesson learned:</b> Always check both logs and metrics when troubleshooting, as either alone may hide the root cause</li>
+</ul>
+<hr>
 <h2>Observability</h2>
 
 <table>
