@@ -17,6 +17,74 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 
 <hr>
 
+<hr>
+
+<h2>🚀 Architecture Evolution</h2>
+
+<h3>v1 – EC2-Based Monitoring (Pre-Kubernetes)</h3>
+<ul>
+<li>Deployed application on EC2</li>
+<li>Manually installed Prometheus, Grafana, and Loki</li>
+<li>Monitoring stack managed separately from application</li>
+</ul>
+<p><b>Problem:</b> High maintenance, not scalable, not cloud-native</p>
+
+<h3>v2 – Kubernetes Foundation (EKS via Terraform)</h3>
+<ul>
+<li>Provisioned EKS cluster using Terraform</li>
+<li>Deployed workloads manually using <code>kubectl apply</code></li>
+</ul>
+<p><b>Problem:</b> Deployment process still manual and not reproducible</p>
+
+<h3>v3 – CI Integration (GitLab CI + OIDC)</h3>
+<ul>
+<li>Implemented GitLab CI pipeline</li>
+<li>Used OIDC for secure AWS authentication</li>
+<li>Automated build and push to ECR</li>
+</ul>
+<p><b>Progress:</b> CI achieved, but CD still manual</p>
+
+<h3>v4 – GitOps Adoption (ArgoCD)</h3>
+<ul>
+<li>Deployed ArgoCD using Terraform</li>
+<li>Introduced GitOps workflow with separate repositories</li>
+<li>Automatic sync based on branch changes</li>
+</ul>
+<p><b>Impact:</b> Fully automated, declarative deployments</p>
+
+<h3>v5 – Helm-Based Standardization</h3>
+<ul>
+<li>Replaced raw Kubernetes manifests with Helm charts</li>
+<li>Introduced environment-based configuration (dev/test/prod)</li>
+<li>Implemented branch-based promotion strategy</li>
+</ul>
+<p><b>Impact:</b> Reusable and scalable deployment model</p>
+
+<h3>v6 – Integrated Observability (Cloud-Native Approach)</h3>
+<ul>
+<li>Initially planned separate monitoring deployment</li>
+<li>Shifted to container-native observability stack</li>
+<li>Used official images and Helm charts for Prometheus, Grafana, and Loki</li>
+</ul>
+<p><b>Insight:</b> Leveraging ecosystem-standard tooling improves consistency and maintainability</p>
+
+<h3>v7 – Production Enhancements</h3>
+<ul>
+<li>Implemented Horizontal Pod Autoscaler (HPA)</li>
+<li>Added resource limits and requests</li>
+<li>Integrated ExternalDNS for automated DNS management</li>
+</ul>
+<p><b>Impact:</b> Production-ready, scalable platform</p>
+
+<h3>📊 Final Outcome</h3>
+<ul>
+<li>Fully automated CI/CD + GitOps pipeline</li>
+<li>Zero manual deployments</li>
+<li>Unified infrastructure, deployment, and observability</li>
+<li>Scalable and production-ready Kubernetes platform</li>
+</ul>
+
+<hr>
 
 <h2>Features</h2>
 
