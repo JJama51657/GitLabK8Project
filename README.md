@@ -15,7 +15,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </p>
 
 
-<hr>
+
 
 <hr>
 
