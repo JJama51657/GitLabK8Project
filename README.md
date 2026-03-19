@@ -29,6 +29,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Progress:</b> CI achieved, but CD still manual</p>
 
+<a href="https://chatgpt.com/s/m_69bbc84dad3881919ff28e65419ad3e2">View Project Discussion</a>
 <h3>v4 – GitOps Adoption (ArgoCD)</h3>
 <ul>
 <li>Deployed ArgoCD using Terraform</li>
