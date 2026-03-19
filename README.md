@@ -138,7 +138,7 @@ Code Push → GitLab CI
 <li>Verified Prometheus scraping and app connectivity to the Java microservice</li>
 <li>Discovered application error on the webpage prevented JMX exporter from exposing metrics</li>
 <li>Checked Loki logs and realized metrics issue could have been detected earlier via logs</li>
-<li>Root cause: ECS image pull failed due to ECR permissions</li>
+<li>Root cause: Image pull failed due to lack of ECR permissions</li>
 <li>Fixed Terraform policies to allow ECR access → redeployed container</li>
 <li><b>Lesson learned:</b> Always check both logs and metrics when troubleshooting, as either alone may hide the root cause</li>
 </ul>
