@@ -3,7 +3,7 @@
 <p>
 End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terraform, GitLab CI/CD, ArgoCD, and a full observability stack.
 </p>
-
+<hr>
 <h2>🚀 Architecture Evolution</h2>
 
 <h3>v1 – EC2-Based Monitoring (Pre-Kubernetes)</h3>
