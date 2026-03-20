@@ -50,7 +50,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <ul>
 <li>Initially planned separate monitoring deployment</li>
 <li>Shifted to container-native observability stack</li>
-<li>Used official images and Helm charts for Prometheus, Grafana, and Loki</li>
+<li>Integrated Helm Chart with official images for Prometheus, Grafana, and Loki</li>
 </ul>
 <p><b>Insight:</b> Leveraging ecosystem-standard tooling improves consistency and maintainability</p>
 
