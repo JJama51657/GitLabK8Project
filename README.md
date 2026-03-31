@@ -242,44 +242,51 @@ Code Push → GitLab CI
 
 <pre>
 TerraformEKS/
-└── vprofile-project/
-    ├── argocd-apps.tf    
-    ├── argocd-outputs.tf
-    ├── argocd.tf
-    ├── eks-cluster.tf
-    ├── external-dns.tf
-    └── helm-provider.tf
-    └── main.tf
-    └── outputs.tf
-    └── route53.tf
-    └── terraform.tf
-    └── terraform.tfvars.example
-    └── variables.tf
-    └── vpc.tf
-K8CICD/
-└── HelmCharts/
-    └── tomcat-monitoring-chart/
-        └── templates/
-          └── apps/
-              └── hpa.yaml
-              └── ingress.yaml
-              └── jmx-configmap.yaml
-              └── tomcat-deployment.yaml
-              └── tomcat-service.yaml
-          └── monitoring/
-              └── alloy-configmap.yaml
-              └── alloy-daemonset.yaml
-              └── alloy-rbac.yaml
-              └── grafana-datasources.yaml
-              └── grafana-deployment.yaml
-              └── loki-configmap.yaml
-              └── loki-deployment.yaml
-              └── prometheus-configmap.yaml
-              └── prometheus-deployment.yaml
-          └── chart.yaml
-          └── values.yaml
-          └── _helpers.tpl
-    └── AppCode/ (Commited to different Repo)
+├── main.tf
+├── variables.tf
+├── outputs.tf
+├── terraform.tf
+└── modules/
+    ├── vpc/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── eks/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    ├── argocd/
+    │   ├── main.tf
+    │   └── outputs.tf
+    ├── argocd-apps/
+    │   ├── main.tf
+    │   └── variables.tf
+    └── external-dns/
+        ├── main.tf
+        └── variables.tf
+HelmCharts/
+└── tomcat-monitoring-chart/
+    ├── templates/
+    │   ├── apps/
+    │   │   ├── hpa.yaml
+    │   │   ├── ingress.yaml
+    │   │   ├── jmx-configmap.yaml
+    │   │   ├── tomcat-deployment.yaml
+    │   │   └── tomcat-service.yaml
+    │   └── monitoring/
+    │       ├── alloy-configmap.yaml
+    │       ├── alloy-daemonset.yaml
+    │       ├── alloy-rbac.yaml
+    │       ├── grafana-datasources.yaml
+    │       ├── grafana-deployment.yaml
+    │       ├── loki-configmap.yaml
+    │       ├── loki-deployment.yaml
+    │       ├── prometheus-configmap.yaml
+    │       └── prometheus-deployment.yaml
+    ├── Chart.yaml
+    ├── values.yaml
+    └── _helpers.tpl
+AppCode/ (Committed to separate repo)
 </pre>
 
 <hr>
