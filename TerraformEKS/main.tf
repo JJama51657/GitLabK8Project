@@ -67,6 +67,11 @@ module "argocd" {
   depends_on = [module.eks]
 }
 
+module "opa" {
+  source     = "./modules/opa"
+  depends_on = [module.eks]
+}
+
 module "argocd_apps" {
   source             = "./modules/argocd-apps"
   argocd_namespace   = module.argocd.namespace

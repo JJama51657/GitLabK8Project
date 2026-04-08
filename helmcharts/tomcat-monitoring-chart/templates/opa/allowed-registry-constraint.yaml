@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedRegistry
+metadata:
+  name: enforce-allowed-registry
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchLabels:
+        app: tomcat
+  parameters:
+    allowedRegistry: {{ .Values.opa.allowedRegistry }}

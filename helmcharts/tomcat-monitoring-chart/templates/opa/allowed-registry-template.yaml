@@ -1,0 +1,30 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: allowedregistry
+spec:
+  crd:
+    spec:
+      names:
+        kind: AllowedRegistry
+      validation:
+        openAPIV3Schema:
+          properties:
+            allowedRegistry:
+              type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package allowedregistry
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          not startswith(container.image, input.parameters.allowedRegistry)
+          msg := sprintf("Image '%v' is not from the allowed registry '%v'", [container.image, input.parameters.allowedRegistry])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.initContainers[_]
+          not startswith(container.image, input.parameters.allowedRegistry)
+          msg := sprintf("Init container image '%v' is not from the allowed registry '%v'", [container.image, input.parameters.allowedRegistry])
+        }
