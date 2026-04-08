@@ -62,6 +62,17 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Impact:</b> Production-ready, scalable platform</p>
 
+<h3>v8 – Maximised Policy Enforcement</h3>
+<ul>
+<li>Deployed OPA Gatekeeper via Terraform Helm module</li>
+<li>Implemented ConstraintTemplate to enforce allowed image registries at admission level</li>
+<li>Scoped constraint to tomcat pods only via label selector</li>
+<li>Registry value configurable per environment via values.yaml</li>
+<li>Configured GitLab RBAC to restrict pipeline job execution to authorised roles only</li>
+<li>Controlled merge and push permissions per repository</li>
+</ul>
+<p><b>Impact:</b> End-to-end least-privilege enforcement — from source control access through to what runs in the cluster</p>
+
 <h3>📊 Final Outcome</h3>
 <ul>
 <li>Fully automated CI/CD + GitOps pipeline</li>
@@ -94,6 +105,8 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <li><b>Observability Stack</b> — Prometheus, Grafana and Loki deployed via Helm</li>
 <li><b>Automated DNS</b> — ExternalDNS automatically updates Route53 records</li>
 <li><b>Autoscaling</b> — HPA scales pods automatically based on CPU/memory demand</li>
+<li><b>Policy Enforcement</b> — OPA Gatekeeper blocks non-compliant images at admission using ConstraintTemplates</li>
+<li><b>GitLab RBAC</b> — Role-based access control restricting pipeline execution, merges, and pushes to authorised users</li>
 </ul>
 
 <hr>
@@ -133,6 +146,16 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <tr>
 <td>Autoscaling</td>
 <td>HPA</td>
+</tr>
+
+<tr>
+<td>Policy</td>
+<td>OPA Gatekeeper</td>
+</tr>
+
+<tr>
+<td>Access Control</td>
+<td>GitLab RBAC</td>
 </tr>
 
 <tr>
@@ -261,9 +284,12 @@ TerraformEKS/
     ├── argocd-apps/
     │   ├── main.tf
     │   └── variables.tf
-    └── external-dns/
+    ├── external-dns/
+    │   ├── main.tf
+    │   └── variables.tf
+    └── opa/
         ├── main.tf
-        └── variables.tf
+        └── outputs.tf
 HelmCharts/
 └── tomcat-monitoring-chart/
     ├── templates/
@@ -273,16 +299,19 @@ HelmCharts/
     │   │   ├── jmx-configmap.yaml
     │   │   ├── tomcat-deployment.yaml
     │   │   └── tomcat-service.yaml
-    │   └── monitoring/
-    │       ├── alloy-configmap.yaml
-    │       ├── alloy-daemonset.yaml
-    │       ├── alloy-rbac.yaml
-    │       ├── grafana-datasources.yaml
-    │       ├── grafana-deployment.yaml
-    │       ├── loki-configmap.yaml
-    │       ├── loki-deployment.yaml
-    │       ├── prometheus-configmap.yaml
-    │       └── prometheus-deployment.yaml
+    │   ├── monitoring/
+    │   │   ├── alloy-configmap.yaml
+    │   │   ├── alloy-daemonset.yaml
+    │   │   ├── alloy-rbac.yaml
+    │   │   ├── grafana-datasources.yaml
+    │   │   ├── grafana-deployment.yaml
+    │   │   ├── loki-configmap.yaml
+    │   │   ├── loki-deployment.yaml
+    │   │   ├── prometheus-configmap.yaml
+    │   │   └── prometheus-deployment.yaml
+    │   └── opa/
+    │       ├── allowed-registry-template.yaml
+    │       └── allowed-registry-constraint.yaml
     ├── Chart.yaml
     ├── values.yaml
     └── _helpers.tpl
