@@ -54,12 +54,13 @@ module "eks" {
   subnet_ids   = module.vpc.private_subnets
 }
 
+
 module "external_dns" {
-  source       = "./modules/external-dns"
-  region       = var.region
-  node_groups  = module.eks.node_groups
-  domain_name  = data.aws_route53_zone.main.name
-  depends_on   = [module.eks]
+  source      = "./modules/external-dns"
+  region      = var.region
+  node_groups = module.eks.node_groups
+  domain_name = data.aws_route53_zone.main.name
+  depends_on  = [module.eks]
 }
 
 module "argocd" {
