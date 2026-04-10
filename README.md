@@ -73,10 +73,20 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Impact:</b> End-to-end least-privilege enforcement — from source control access through to what runs in the cluster</p>
 
+<h3>v9 – Zero Downtime Deployments</h3>
+<ul>
+<li>Implemented RollingUpdate strategy with <code>maxUnavailable: 0</code> and <code>maxSurge: 1</code> to ensure no pods are taken down until replacements are ready</li>
+<li>Added readiness probe to prevent traffic being sent to pods that are still starting up</li>
+<li>Added liveness probe to automatically restart unhealthy pods</li>
+<li>Configured <code>terminationGracePeriodSeconds: 60</code> to allow in-flight requests to complete before pod shutdown</li>
+</ul>
+<p><b>Impact:</b> Deployments are now fully zero downtime — no dropped requests during rolling updates</p>
+
 <h3>📊 Final Outcome</h3>
 <ul>
 <li>Fully automated CI/CD + GitOps pipeline</li>
 <li>Zero manual deployments</li>
+<li>Zero downtime rolling updates with graceful pod termination</li>
 <li>Unified infrastructure, deployment, and observability</li>
 <li>Scalable and production-ready Kubernetes platform</li>
 </ul>
@@ -107,6 +117,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <li><b>Autoscaling</b> — HPA scales pods automatically based on CPU/memory demand</li>
 <li><b>Policy Enforcement</b> — OPA Gatekeeper blocks non-compliant images at admission using ConstraintTemplates</li>
 <li><b>GitLab RBAC</b> — Role-based access control restricting pipeline execution, merges, and pushes to authorised users</li>
+<li><b>Zero Downtime Deployments</b> — RollingUpdate strategy with readiness/liveness probes and graceful termination ensuring no dropped requests during updates</li>
 </ul>
 
 <hr>
