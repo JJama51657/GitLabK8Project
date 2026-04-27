@@ -20,8 +20,8 @@ data "aws_route53_zone" "main" {
 }
 
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_endpoint)
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
@@ -31,8 +31,8 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_endpoint)
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
@@ -53,7 +53,6 @@ module "eks" {
   vpc_id       = module.vpc.vpc_id
   subnet_ids   = module.vpc.private_subnets
 }
-
 
 module "external_dns" {
   source      = "./modules/external-dns"
@@ -79,4 +78,11 @@ module "argocd_apps" {
   git_repo_url       = var.git_repo_url
   git_manifests_path = var.git_manifests_path
   depends_on         = [module.argocd]
+}
+
+module "external_secrets" {
+  source            = "./modules/eso"
+  cluster_name      = var.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
 }
