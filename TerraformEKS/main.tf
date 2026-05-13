@@ -86,3 +86,12 @@ module "external_secrets" {
   oidc_provider_arn = module.eks.oidc_provider_arn
   oidc_provider_url = module.eks.oidc_provider_url
 }
+
+module "cert_manager" {
+  source            = "./modules/cert-manager"
+  cluster_name      = var.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+  route53_zone_id   = data.aws_route53_zone.main.zone_id
+  depends_on        = [module.eks]
+}

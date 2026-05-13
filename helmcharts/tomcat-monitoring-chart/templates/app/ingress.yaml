@@ -3,12 +3,21 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "tomcat-monitoring.fullname" . }}-ingress
-  {{- with .Values.ingress.annotations }}
   annotations:
+    # tells cert-manager which ClusterIssuer to use — it sees this annotation and triggers the ACME DNS-01 flow
+    # the ingress-shim built into cert-manager automatically creates the Certificate resource behind the scenes
+    # so there is no need for a separate certificate.yaml
+    cert-manager.io/cluster-issuer: letsencrypt-{{ .Values.certManager.environment }}
+    {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: tomcat-tls-secret # cert-manager stores the issued TLS cert here once Let's Encrypt validates the domain
+                                    # NGINX ingress loads this secret to terminate HTTPS on port 443
   rules:
   - host: {{ .Values.ingress.host }}
     http:

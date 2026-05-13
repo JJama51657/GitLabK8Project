@@ -84,6 +84,18 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Impact:</b> No secrets stored in Git or Kubernetes manifests — secrets are fetched directly from AWS Secrets Manager at runtime using short-lived, workload-scoped IAM credentials</p>
 
+<h3>v11 – Automated TLS (cert-manager + Let's Encrypt)</h3>
+<ul>
+<li>Deployed cert-manager via Terraform Helm module into a dedicated <code>cert-manager</code> namespace with CRDs installed</li>
+<li>Configured IRSA for cert-manager — dedicated IAM role scoped exclusively to <code>system:serviceaccount:cert-manager:cert-manager</code>, separate from the ExternalDNS role</li>
+<li>IAM policy grants least-privilege Route53 access: <code>ChangeResourceRecordSets</code> and <code>GetChange</code> scoped to the specific hosted zone only</li>
+<li>Defined a <code>ClusterIssuer</code> in the Helm chart pointing to Let's Encrypt using DNS-01 challenge via Route53</li>
+<li>cert-manager ingress-shim detects the <code>cert-manager.io/cluster-issuer</code> annotation on the ingress and automatically triggers the ACME flow — no separate <code>Certificate</code> manifest needed</li>
+<li>cert-manager writes a <code>_acme-challenge</code> TXT record to Route53 using its IRSA credentials, Let's Encrypt validates it, and the issued cert is stored as a Kubernetes secret</li>
+<li>NGINX ingress loads the secret and terminates HTTPS — cert auto-renews at 60 days with no manual intervention</li>
+</ul>
+<p><b>Impact:</b> End-to-end automated TLS — certificates are requested, validated, issued, and renewed without any manual steps or static credentials</p>
+
 <h3>v10 – Zero Downtime Deployments</h3>
 <ul>
 <li>Implemented RollingUpdate strategy with <code>maxUnavailable: 0</code> and <code>maxSurge: 1</code> to ensure no pods are taken down until replacements are ready</li>
@@ -130,6 +142,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <li><b>GitLab RBAC</b> — Role-based access control restricting pipeline execution, merges, and pushes to authorised users</li>
 <li><b>Zero Downtime Deployments</b> — RollingUpdate strategy with readiness/liveness probes and graceful termination ensuring no dropped requests during updates</li>
 <li><b>Secrets Management</b> — External Secrets Operator syncs secrets from AWS Secrets Manager into Kubernetes; ESO authenticates via IRSA with no static credentials</li>
+<li><b>Automated TLS</b> — cert-manager obtains and renews Let's Encrypt certificates automatically via DNS-01 challenge; authenticates to Route53 using a dedicated IRSA role</li>
 </ul>
 
 <hr>
@@ -179,6 +192,11 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <tr>
 <td>Secrets Management</td>
 <td>External Secrets Operator, AWS Secrets Manager, IRSA</td>
+</tr>
+
+<tr>
+<td>TLS</td>
+<td>cert-manager, Let's Encrypt, IRSA</td>
 </tr>
 
 <tr>
@@ -318,7 +336,10 @@ TerraformEKS/
     ├── opa/
     │   ├── main.tf
     │   └── outputs.tf
-    └── eso/
+    ├── eso/
+    │   ├── main.tf
+    │   └── variables.tf
+    └── cert-manager/
         ├── main.tf
         └── variables.tf
 HelmCharts/
@@ -343,9 +364,11 @@ HelmCharts/
     │   ├── opa/
     │   │   ├── allowed-registry-template.yaml
     │   │   └── allowed-registry-constraint.yaml
-    │   └── Secretmanagement/
-    │       ├── SecretStore.yaml
-    │       └── ExternalSecrets.yaml
+    │   ├── Secretmanagement/
+    │   │   ├── SecretStore.yaml
+    │   │   └── ExternalSecrets.yaml
+    │   └── cert-manager/
+    │       └── cluster-issuer.yaml
     ├── Chart.yaml
     ├── values.yaml
     └── _helpers.tpl

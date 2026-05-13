@@ -64,3 +64,15 @@ alloy:
   image:
     repository: grafana/alloy
     tag: latest
+
+aws:
+  region: us-east-1
+
+certManager:
+  environment: staging          # use staging first — prod has a rate limit of 5 duplicate certs per week
+  email: <your-email>           # Let's Encrypt sends expiry warnings here
+  hostedZoneID: <your-zone-id>  # Route53 hosted zone ID cert-manager writes the DNS-01 challenge TXT record to
+  acmeServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  # once staging works swap both values below for prod:
+  # environment: prod
+  # acmeServer: https://acme-v02.api.letsencrypt.org/directory

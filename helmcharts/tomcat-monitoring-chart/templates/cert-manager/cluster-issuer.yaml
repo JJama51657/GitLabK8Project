@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer # cluster-scoped — any namespace can use this issuer, not just the one it's deployed in
+metadata:
+  name: letsencrypt-{{ .Values.certManager.environment }} # e.g. letsencrypt-staging or letsencrypt-prod
+spec:
+  acme:
+    server: {{ .Values.certManager.acmeServer }} # staging: https://acme-staging-v02.api.letsencrypt.org/directory
+                                                 # prod:    https://acme-v02.api.letsencrypt.org/directory
+    email: {{ .Values.certManager.email }}       # Let's Encrypt sends expiry warnings to this address
+    privateKeySecretRef:
+      name: letsencrypt-{{ .Values.certManager.environment }} # cert-manager stores the ACME account private key here
+                                                              # this is NOT your TLS cert — it's the key used to authenticate with Let's Encrypt
+    solvers:
+      - dns01:        # proves domain ownership by writing a TXT record to Route53
+                      # cert-manager uses the IRSA credentials from its service account to authenticate to Route53
+          route53:
+            region: {{ .Values.aws.region }}
+            hostedZoneID: {{ .Values.certManager.hostedZoneID }} # the specific Route53 zone cert-manager will write the _acme-challenge TXT record to
