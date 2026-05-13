@@ -73,7 +73,18 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Impact:</b> End-to-end least-privilege enforcement — from source control access through to what runs in the cluster</p>
 
-<h3>v9 – Zero Downtime Deployments</h3>
+<h3>v9 – Secrets Management (ESO + IRSA)</h3>
+<ul>
+<li>Deployed External Secrets Operator (ESO) via Terraform Helm module into a dedicated <code>external-secrets</code> namespace</li>
+<li>Configured IRSA (IAM Roles for Service Accounts) — ESO's service account is annotated with an IAM role ARN, allowing it to authenticate to AWS without static credentials</li>
+<li>IAM role trust policy scoped to the exact OIDC issuer and service account (<code>system:serviceaccount:external-secrets:external-secrets</code>) using <code>sts:AssumeRoleWithWebIdentity</code></li>
+<li>IAM policy grants least-privilege access: <code>secretsmanager:GetSecretValue</code> and <code>secretsmanager:DescribeSecret</code> only</li>
+<li>Defined a <code>SecretStore</code> in the Helm chart pointing to AWS Secrets Manager, authenticated via the IRSA-bound service account</li>
+<li>Defined an <code>ExternalSecret</code> in the Helm chart that pulls the secret value from Secrets Manager and materialises it as a native Kubernetes Secret</li>
+</ul>
+<p><b>Impact:</b> No secrets stored in Git or Kubernetes manifests — secrets are fetched directly from AWS Secrets Manager at runtime using short-lived, workload-scoped IAM credentials</p>
+
+<h3>v10 – Zero Downtime Deployments</h3>
 <ul>
 <li>Implemented RollingUpdate strategy with <code>maxUnavailable: 0</code> and <code>maxSurge: 1</code> to ensure no pods are taken down until replacements are ready</li>
 <li>Added readiness probe to prevent traffic being sent to pods that are still starting up</li>
@@ -118,6 +129,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <li><b>Policy Enforcement</b> — OPA Gatekeeper blocks non-compliant images at admission using ConstraintTemplates</li>
 <li><b>GitLab RBAC</b> — Role-based access control restricting pipeline execution, merges, and pushes to authorised users</li>
 <li><b>Zero Downtime Deployments</b> — RollingUpdate strategy with readiness/liveness probes and graceful termination ensuring no dropped requests during updates</li>
+<li><b>Secrets Management</b> — External Secrets Operator syncs secrets from AWS Secrets Manager into Kubernetes; ESO authenticates via IRSA with no static credentials</li>
 </ul>
 
 <hr>
@@ -162,6 +174,11 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <tr>
 <td>Policy</td>
 <td>OPA Gatekeeper</td>
+</tr>
+
+<tr>
+<td>Secrets Management</td>
+<td>External Secrets Operator, AWS Secrets Manager, IRSA</td>
 </tr>
 
 <tr>
@@ -298,9 +315,12 @@ TerraformEKS/
     ├── external-dns/
     │   ├── main.tf
     │   └── variables.tf
-    └── opa/
+    ├── opa/
+    │   ├── main.tf
+    │   └── outputs.tf
+    └── eso/
         ├── main.tf
-        └── outputs.tf
+        └── variables.tf
 HelmCharts/
 └── tomcat-monitoring-chart/
     ├── templates/
@@ -320,9 +340,12 @@ HelmCharts/
     │   │   ├── loki-deployment.yaml
     │   │   ├── prometheus-configmap.yaml
     │   │   └── prometheus-deployment.yaml
-    │   └── opa/
-    │       ├── allowed-registry-template.yaml
-    │       └── allowed-registry-constraint.yaml
+    │   ├── opa/
+    │   │   ├── allowed-registry-template.yaml
+    │   │   └── allowed-registry-constraint.yaml
+    │   └── Secretmanagement/
+    │       ├── SecretStore.yaml
+    │       └── ExternalSecrets.yaml
     ├── Chart.yaml
     ├── values.yaml
     └── _helpers.tpl
