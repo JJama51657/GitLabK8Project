@@ -55,11 +55,14 @@ module "eks" {
 }
 
 module "external_dns" {
-  source      = "./modules/external-dns"
-  region      = var.region
-  node_groups = module.eks.node_groups
-  domain_name = data.aws_route53_zone.main.name
-  depends_on  = [module.eks]
+  source            = "./modules/external-dns"
+  region            = var.region
+  domain_name       = data.aws_route53_zone.main.name
+  cluster_name      = var.cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+  route53_zone_id   = data.aws_route53_zone.main.zone_id
+  depends_on        = [module.eks]
 }
 
 module "argocd" {
@@ -85,6 +88,8 @@ module "external_secrets" {
   cluster_name      = var.cluster_name
   oidc_provider_arn = module.eks.oidc_provider_arn
   oidc_provider_url = module.eks.oidc_provider_url
+  region            = var.region
+  secret_prefix     = "vprofile/"
 }
 
 module "cert_manager" {

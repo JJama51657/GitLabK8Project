@@ -2,6 +2,8 @@ data "aws_eks_cluster" "this" {
   name = var.cluster_name
 }
 
+# fetches the AWS account ID dynamically — avoids hardcoding it as a variable
+data "aws_caller_identity" "current" {}
 
 data "aws_iam_openid_connect_provider" "this" {
   url = var.oidc_provider_url
@@ -64,7 +66,10 @@ resource "aws_iam_policy" "eso" {
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ]
-        Resource = "*"
+        Resource = [
+          # scoped to only secrets matching the prefix — the * accounts for the random suffix AWS appends to secret ARNs
+          "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.secret_prefix}*"
+        ]
       }
     ]
   })

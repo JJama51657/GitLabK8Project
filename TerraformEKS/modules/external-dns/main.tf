@@ -1,3 +1,29 @@
+data "aws_eks_cluster" "this" {
+  name = var.cluster_name
+}
+
+resource "aws_iam_role" "external_dns" {
+  name = "eks-external-dns-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = var.oidc_provider_arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(data.aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:external-dns:external-dns"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_iam_policy" "external_dns" {
   name = "external-dns-policy"
 
@@ -8,9 +34,13 @@ resource "aws_iam_policy" "external_dns" {
         Effect = "Allow"
         Action = [
           "route53:ChangeResourceRecordSets",
-          "route53:ListHostedZones",
           "route53:ListResourceRecordSets"
         ]
+        Resource = "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["route53:ListHostedZones"]
         Resource = "*"
       }
     ]
@@ -18,8 +48,7 @@ resource "aws_iam_policy" "external_dns" {
 }
 
 resource "aws_iam_role_policy_attachment" "external_dns" {
-  for_each   = var.node_groups
-  role       = each.value.iam_role_name
+  role       = aws_iam_role.external_dns.name
   policy_arn = aws_iam_policy.external_dns.arn
 }
 
@@ -48,6 +77,18 @@ resource "helm_release" "external_dns" {
   namespace        = "external-dns"
   create_namespace = true
 
+  values = [
+    yamlencode({
+      serviceAccount = {
+        create = true
+        name   = "external-dns"
+        annotations = {
+          "eks.amazonaws.com/role-arn" = aws_iam_role.external_dns.arn
+        }
+      }
+    })
+  ]
+
   set {
     name  = "provider"
     value = "aws"
@@ -55,16 +96,6 @@ resource "helm_release" "external_dns" {
 
   set {
     name  = "aws.region"
-    value = var.region
-  }
-
-  set {
-    name  = "env[0].name"
-    value = "AWS_DEFAULT_REGION"
-  }
-
-  set {
-    name  = "env[0].value"
     value = var.region
   }
 
