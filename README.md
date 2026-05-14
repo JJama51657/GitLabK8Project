@@ -84,7 +84,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Impact:</b> No secrets stored in Git or Kubernetes manifests — secrets are fetched directly from AWS Secrets Manager at runtime using short-lived, workload-scoped IAM credentials</p>
 
-<h3>v11 – Automated TLS (cert-manager + Let's Encrypt)</h3>
+<h3>v10 – Automated TLS (cert-manager + Let's Encrypt)</h3>
 <ul>
 <li>Deployed cert-manager via Terraform Helm module into a dedicated <code>cert-manager</code> namespace with CRDs installed</li>
 <li>Configured IRSA for cert-manager — dedicated IAM role scoped exclusively to <code>system:serviceaccount:cert-manager:cert-manager</code>, separate from the ExternalDNS role</li>
@@ -96,7 +96,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 </ul>
 <p><b>Impact:</b> End-to-end automated TLS — certificates are requested, validated, issued, and renewed without any manual steps or static credentials</p>
 
-<h3>v10 – Zero Downtime Deployments</h3>
+<h3>v11 – Zero Downtime Deployments</h3>
 <ul>
 <li>Implemented RollingUpdate strategy with <code>maxUnavailable: 0</code> and <code>maxSurge: 1</code> to ensure no pods are taken down until replacements are ready</li>
 <li>Added readiness probe to prevent traffic being sent to pods that are still starting up</li>
