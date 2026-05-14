@@ -119,7 +119,7 @@ End-to-end DevOps pipeline deploying a Java application to AWS EKS using Terrafo
 <h2>Architecture Overview</h2>
 
 <p>
-<img src="screenshots/GitCDDIagram.png" alt="Architecture Diagram" height=550>
+<img src="screenshots/GitCDDiagram.png" alt="Architecture Diagram" height=600>
 </p>
 
 
